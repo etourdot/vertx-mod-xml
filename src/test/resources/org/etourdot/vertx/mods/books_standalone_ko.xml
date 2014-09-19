@@ -1,0 +1,37 @@
+<?xml version="1.0" standalone="yes"?>
+<BOOKLIST>
+   <BOOKS>
+      <ITEM CAT="MMP">
+         <TITLE>Pride and Prejudice</TITLE>
+         <AUTHOR>Jane Austen</AUTHOR>
+         <PUBLISHER>Modern Library
+         <PUB-DATE></PUBLISHER>2002-12-31</PUB-DATE>
+         <LANGUAGE>English</LANGUAGE>
+         <PRICE>9</PRICE>
+         <QUANTITY>187</QUANTITY>
+         <ISBN>0679601686</ISBN>
+         <PAGES>352</PAGES>
+         <DIMENSIONS UNIT="in">8.3 5.7 1.1</DIMENSIONS>
+         <WEIGHT UNIT="oz">6.1</WEIGHT>
+      </ITEM>
+      <ITEM CAT="P">
+         <TITLE>Wuthering Heights</TITLE>
+         <AUTHOR>Charlotte Brontë</AUTHOR>
+         <PUBLISHER>Penguin Classics</PUBLISHER>
+         <PUB-DATE>2002-12-31</PUB-DATE>
+         <LANGUAGE>English</LANGUAGE>
+         <PRICE>9.040000000000001</PRICE>
+         <QUANTITY>113</QUANTITY>
+         <ISBN>0141439556</ISBN>
+         <PAGES>430</PAGES>
+         <DIMENSIONS UNIT="in">1.0 5.2 7.8</DIMENSIONS>
+         <WEIGHT UNIT="oz">11.2</WEIGHT>
+      </ITEM>
+       <CATEGORY CODE="P" DESC="Paperback"/>
+   </BOOKS>
+   <CATEGORIES DESC="Miscellaneous categories">
+      <CATEGORY CODE="P" DESC="Paperback"/>
+      <CATEGORY CODE="MMP" DESC="Mass-market Paperback"/>
+      <CATEGORY CODE="H" DESC="Hard Cover"/>
+   </CATEGORIES>
+</BOOKLIST>

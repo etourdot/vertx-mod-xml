@@ -1,0 +1,9 @@
+{
+  "main": "org.etourdot.vertx.mods.XmlWorker",
+  "worker": true,
+
+  "description":"Xml module for Vert.x",
+  "licenses": ["The Apache Software License Version 2.0"],
+  "author": "etourdot",
+  "keywords": ["xml", "xslt", "xquery", "xpath"]
+}
