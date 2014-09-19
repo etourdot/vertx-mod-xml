@@ -289,4 +289,12 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>bintray-etourdot-vertx-mods-vertx-mod-xml</id>
+            <name>etourdot-vertx-mods-vertx-mod-xml</name>
+            <url>https://api.bintray.com/maven/etourdot/vertx-mods/vertx-mod-xml</url>
+        </repository>
+    </distributionManagement>
+    
 </project>
