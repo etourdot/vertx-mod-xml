@@ -1,11 +1,9 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>io.vertx</groupId>
-    <artifactId>mod-xml</artifactId>
-    <version>0.1.1</version>
+    <groupId>org.etourdot</groupId>
+    <artifactId>vertx-mod-xml</artifactId>
+    <version>0.1.2</version>
     <packaging>jar</packaging>
     <name>xml-mod</name>
 
@@ -51,7 +49,7 @@
         <maven.enforcer.plugin.version>1.1</maven.enforcer.plugin.version>
         <maven.clean.plugin.version>2.5</maven.clean.plugin.version>
         <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
-
+        <maven.jgitflow.plugin.version>1.0-m4.3</maven.jgitflow.plugin.version>
         <!-- dependency versions -->
         <version.junit>4.11</version.junit>
         <version.vertx>2.1</version.vertx>
@@ -141,7 +139,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -154,7 +152,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
@@ -286,6 +284,12 @@
                     <useSystemClassloader>false</useSystemClassloader>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>external.atlassian.jgitflow</groupId>
+                <artifactId>jgitflow-maven-plugin</artifactId>
+                <version>${maven.jgitflow.plugin.version}</version>
+            </plugin>
         </plugins>
     </build>
 
@@ -296,5 +300,11 @@
             <url>https://api.bintray.com/maven/etourdot/vertx-mods/vertx-mod-xml</url>
         </repository>
     </distributionManagement>
-    
+
+    <scm>
+        <connection>scm:git:https://github.com/etourdot/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/etourdot/${project.artifactId}.git</developerConnection>
+        <url>https://github.com/etourdot/${project.artifactId}</url>
+        <tag>HEAD</tag>
+    </scm>
 </project>

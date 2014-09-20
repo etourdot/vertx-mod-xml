@@ -137,10 +137,8 @@ public class XmlTransformHandler extends XmlDefaultHandler {
             JsonObject outputObject = new JsonObject();
             outputObject.putString("output", writer.toString());
             sendOK(message, outputObject);
-            return;
         } catch (SaxonApiException | UnsupportedEncodingException | ExecutionException e) {
             sendError(message, e.getMessage());
-            return;
         }
     }
 }

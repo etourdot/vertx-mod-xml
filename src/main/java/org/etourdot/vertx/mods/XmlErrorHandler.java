@@ -4,13 +4,10 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.TransformerException;
-
 /**
  * Created by Emmanuel TOURDOT on 10/09/2014.
  */
-public class XmlErrorHandler implements ErrorHandler {
+class XmlErrorHandler implements ErrorHandler {
 
     private final StringBuffer buffer;
 

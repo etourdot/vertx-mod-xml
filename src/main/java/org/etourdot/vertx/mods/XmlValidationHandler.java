@@ -24,27 +24,14 @@ import net.sf.saxon.s9api.Processor;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.json.JsonObject;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.ByteArrayInputStream;
-import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamSource;
 
 /**
  * XML Module<p> Please see the busmods manual for a full description<p>
@@ -99,7 +86,7 @@ public class XmlValidationHandler extends XmlDefaultHandler {
     private class XmlToValidate {
 
         private boolean myResult;
-        private Message message;
+        private final Message message;
         private InputSource inputSource;
 
         public XmlToValidate(Message message) {
