@@ -35,6 +35,9 @@
 
     <properties>
         <module.name>${project.groupId}~${project.artifactId}~${project.version}</module.name>
+        <mods.directory>target/mods</mods.directory>
+        <vertx.pullInDeps>false</vertx.pullInDeps>
+        <vertx.createFatJar>false</vertx.createFatJar>
         <!-- encodings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -50,6 +53,8 @@
         <maven.clean.plugin.version>2.5</maven.clean.plugin.version>
         <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
         <maven.jgitflow.plugin.version>1.0-m4.3</maven.jgitflow.plugin.version>
+        <maven.vertx.plugin.version>2.0.8-final</maven.vertx.plugin.version>
+
         <!-- dependency versions -->
         <version.junit>4.11</version.junit>
         <version.vertx>2.1</version.vertx>
@@ -79,11 +84,6 @@
             <artifactId>Saxon-HE</artifactId>
             <version>${version.saxonHE}</version>
         </dependency>
-        <!--dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.11.0</version>
-        </dependency-->
 
         <!-- vert.x dependencies -->
         <dependency>
@@ -98,6 +98,13 @@
             <version>${version.vertx}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-hazelcast</artifactId>
+            <version>${version.vertx}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- other dependencies -->
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -170,13 +177,45 @@
         </extensions>
         <plugins>
             <plugin>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-maven-plugin</artifactId>
+                <version>${maven.vertx.plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>io.vertx</groupId>
+                        <artifactId>vertx-platform</artifactId>
+                        <version>${version.vertx}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>io.vertx</groupId>
+                        <artifactId>vertx-core</artifactId>
+                        <version>${version.vertx}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>io.vertx</groupId>
+                        <artifactId>vertx-hazelcast</artifactId>
+                        <version>${version.vertx}</version>
+                    </dependency>
+                </dependencies>
+
+                <executions>
+                    <execution>
+                        <id>PullInDeps</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>pullInDeps</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
             <plugin>
@@ -209,7 +248,7 @@
                         </goals>
                         <configuration>
                             <overwrite>true</overwrite>
-                            <outputDirectory>target/mods/${module.name}</outputDirectory>
+                            <outputDirectory>${mods.directory}/${module.name}</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>target/classes</directory>
@@ -232,13 +271,41 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>target/mods/${module.name}/lib</outputDirectory>
+                            <outputDirectory>${mods.directory}/${module.name}/lib</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-mod-dependencies-to-target-dependencies</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/dependencies</outputDirectory>
                             <includeScope>runtime</includeScope>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>assemble</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
