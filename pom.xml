@@ -53,7 +53,6 @@
         <maven.clean.plugin.version>2.5</maven.clean.plugin.version>
         <maven.source.plugin.version>2.2.1</maven.source.plugin.version>
         <maven.jgitflow.plugin.version>1.0-m4.3</maven.jgitflow.plugin.version>
-        <maven.vertx.plugin.version>2.0.8-final</maven.vertx.plugin.version>
 
         <!-- dependency versions -->
         <version.junit>4.11</version.junit>
@@ -162,38 +161,6 @@
             </extension>
         </extensions>
         <plugins>
-            <plugin>
-                <groupId>io.vertx</groupId>
-                <artifactId>vertx-maven-plugin</artifactId>
-                <version>${maven.vertx.plugin.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>io.vertx</groupId>
-                        <artifactId>vertx-platform</artifactId>
-                        <version>${version.vertx}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>io.vertx</groupId>
-                        <artifactId>vertx-core</artifactId>
-                        <version>${version.vertx}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>io.vertx</groupId>
-                        <artifactId>vertx-hazelcast</artifactId>
-                        <version>${version.vertx}</version>
-                    </dependency>
-                </dependencies>
-
-                <executions>
-                    <execution>
-                        <id>PullInDeps</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>pullInDeps</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
