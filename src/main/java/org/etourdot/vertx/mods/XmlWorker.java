@@ -16,15 +16,15 @@
 
 package org.etourdot.vertx.mods;
 
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.eventbus.EventBus;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.s9api.Processor;
-
-import org.vertx.java.busmods.BusModBase;
 
 /**
  * XML Module<p> Please see the busmods manual for a full description<p>
  */
-public class XmlWorker extends BusModBase {
+public class XmlWorker extends AbstractVerticle {
 
     public final static String VALIDATION_ADDRESS = "xmlworker.validation";
     public final static String TRANSFORM_ADDRESS = "xmlworker.transform";
@@ -35,14 +35,14 @@ public class XmlWorker extends BusModBase {
 
     @Override
     public void start() {
-        super.start();
 
         Configuration configuration = new Configuration();
         processor = new Processor(configuration);
-        eb.registerHandler(VALIDATION_ADDRESS, new XmlValidationHandler(processor));
-        eb.registerHandler(TRANSFORM_ADDRESS, new XmlTransformHandler(processor));
-        eb.registerHandler(QUERY_ADDRESS, new XmlQueryHandler(processor));
-        eb.registerHandler(XPATH_ADDRESS, new XmlXPathHandler(processor));
+        EventBus eb = vertx.eventBus();
+        eb.consumer(VALIDATION_ADDRESS, new XmlValidationHandler(processor)::handle);
+        eb.consumer(TRANSFORM_ADDRESS, new XmlTransformHandler(processor)::handle);
+        eb.consumer(QUERY_ADDRESS, new XmlQueryHandler(processor)::handle);
+        eb.consumer(XPATH_ADDRESS, new XmlXPathHandler(processor)::handle);
     }
 
     @Override

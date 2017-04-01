@@ -17,21 +17,17 @@
 package org.etourdot.vertx.mods;
 
 import com.google.common.base.Strings;
-
-
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonObject;
 import net.sf.saxon.s9api.Processor;
-
-import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
-import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
-
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
 
 /**
  * XML Module<p> Please see the busmods manual for a full description<p>

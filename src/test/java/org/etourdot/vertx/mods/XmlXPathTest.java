@@ -16,65 +16,37 @@
 
 package org.etourdot.vertx.mods;
 
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.unit.Async;
+import io.vertx.ext.unit.TestContext;
+import io.vertx.ext.unit.junit.VertxUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.vertx.java.core.AsyncResult;
-import org.vertx.java.core.AsyncResultHandler;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.core.logging.Logger;
-import org.vertx.testtools.JavaClassRunner;
-import org.vertx.testtools.TestVerticle;
-
-
-import static org.vertx.testtools.VertxAssert.assertEquals;
-import static org.vertx.testtools.VertxAssert.assertNotNull;
-import static org.vertx.testtools.VertxAssert.assertTrue;
-import static org.vertx.testtools.VertxAssert.testComplete;
 
 /**
  * XML Module Test<p>
  */
-@RunWith(JavaClassRunner.class)
-public class XmlXPathTest extends TestVerticle {
-
-    private Logger logger;
-
-    @Override
-    public void start() {
-        initialize();
-        final JsonObject conf = new JsonObject();
-        container.deployModule(System.getProperty("vertx.modulename"), conf,
-                new AsyncResultHandler<String>() {
-                    @Override
-                    public void handle(AsyncResult<String> asyncResult) {
-                        if (asyncResult.failed()) {
-                            container.logger().error(asyncResult.cause());
-                        }
-                        assertTrue(asyncResult.succeeded());
-                        assertNotNull("deploymentID should not be null", asyncResult.result());
-                        // If deployed correctly then start the tests!
-                        startTests();
-                    }
-                });
-        logger = container.logger();
-    }
-
+@RunWith(VertxUnitRunner.class)
+public class XmlXPathTest extends AbstractXmlTest {
+    
      @Test
-    public void testXmlXPath() throws Exception {
-         final Handler<Message<JsonObject>> replyHandler = new Handler<Message<JsonObject>>() {
-            public void handle(Message<JsonObject> message) {
-                assertEquals("ok", message.body().getString("status"));
-                assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>Charlotte Brontë",message.body().getString("output"));
-                testComplete();
-            }
-        };
+    public void testXmlXPath(TestContext context) throws Exception {
+
+         Async async = context.async();
+         final Handler<AsyncResult<Message<JsonObject>>> handler = context.asyncAssertSuccess(message -> {
+            context.assertEquals("ok", message.body().getString("status"));
+            context.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>Charlotte Brontë",message.body().getString("output"));
+            async.complete();
+        });
         final JsonObject jsonObject = new JsonObject();
-        jsonObject.putString(XmlXPathHandler.URL_XML, getClass().getResource(
+        jsonObject.put(XmlXPathHandler.URL_XML, getClass().getResource(
                 "books_standalone_ok.xml").toURI().toASCIIString());
-        jsonObject.putString(XmlXPathHandler.XPATH, "//ITEM[@CAT='P']/AUTHOR/text()");
-        vertx.eventBus().send(XmlWorker.XPATH_ADDRESS, jsonObject, replyHandler);
+        jsonObject.put(XmlXPathHandler.XPATH, "//ITEM[@CAT='P']/AUTHOR/text()");
+        eventBus.send(XmlWorker.XPATH_ADDRESS, jsonObject, handler);
     }
+    
 }
 
