@@ -1,13 +1,14 @@
 package org.etourdot.vertx.mods;
 
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
+import io.vertx.core.Handler;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonObject;
 
 /**
  * Created by Emmanuel TOURDOT on 01/09/2014.
  */
 abstract class XmlDefaultHandler implements Handler<Message<?>> {
+
     public abstract void handle(Message<?> message);
 
     void sendOK(Message<JsonObject> message) {
@@ -22,7 +23,7 @@ abstract class XmlDefaultHandler implements Handler<Message<?>> {
         if (json == null) {
             json = new JsonObject();
         }
-        json.putString("status", status);
+        json.put("status", status);
         message.reply(json);
     }
 
@@ -35,7 +36,7 @@ abstract class XmlDefaultHandler implements Handler<Message<?>> {
     }
 
     void sendError(Message<JsonObject> message, String error, Exception e) {
-        JsonObject json = new JsonObject().putString("status", "error").putString("message", error);
+        JsonObject json = new JsonObject().put("status", "error").put("message", error);
         message.reply(json);
     }
 

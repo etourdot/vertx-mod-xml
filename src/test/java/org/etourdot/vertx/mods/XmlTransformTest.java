@@ -18,106 +18,80 @@ package org.etourdot.vertx.mods;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.ext.unit.Async;
+import io.vertx.ext.unit.TestContext;
+import io.vertx.ext.unit.junit.VertxUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.vertx.java.core.AsyncResult;
-import org.vertx.java.core.AsyncResultHandler;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.core.logging.Logger;
-import org.vertx.testtools.JavaClassRunner;
-import org.vertx.testtools.TestVerticle;
 
 import java.io.File;
-
-import static org.vertx.testtools.VertxAssert.assertEquals;
-import static org.vertx.testtools.VertxAssert.assertNotNull;
-import static org.vertx.testtools.VertxAssert.assertTrue;
-import static org.vertx.testtools.VertxAssert.testComplete;
 
 /**
  * XML Module Test<p>
  */
-@RunWith(JavaClassRunner.class)
-public class XmlTransformTest extends TestVerticle {
-
-    private Logger logger;
-
-    @Override
-    public void start() {
-        initialize();
-        final JsonObject conf = new JsonObject();
-        container.deployModule(System.getProperty("vertx.modulename"), conf,
-                new AsyncResultHandler<String>() {
-                    @Override
-                    public void handle(AsyncResult<String> asyncResult) {
-                        if (asyncResult.failed()) {
-                            container.logger().error(asyncResult.cause());
-                        }
-                        assertTrue(asyncResult.succeeded());
-                        assertNotNull("deploymentID should not be null",
-                                asyncResult.result());
-                        // If deployed correctly then start the tests!
-                        startTests();
-                    }
-                });
-        logger = container.logger();
-    }
-
-    /**
-     * Tests XmlTransformHandler
-     */
+@RunWith(VertxUnitRunner.class)
+public class XmlTransformTest extends AbstractXmlTest {
 
     @Test
-    public void testXmlTransformWithXslKo() throws Exception {
-        final Handler<Message<JsonObject>> replyHandler = new Handler<Message<JsonObject>>() {
-            public void handle(Message<JsonObject> message) {
-                assertEquals("error", message.body().getString("status"));
-                assertTrue(message.body().getString("message").contains("Failed to compile stylesheet"));
-                testComplete();
-            }
-        };
+    public void testXmlTransformWithXslKo(TestContext context) throws Exception {
+        Async async = context.async();
+
+        final Handler<AsyncResult<Message<JsonObject>>> handler = context.asyncAssertSuccess( message -> {
+            context.assertEquals("error", message.body().getString("status"));
+            context.assertTrue(message.body().getString("message").contains("Failed to compile stylesheet"));
+            async.complete();
+        });
+
         final JsonObject jsonObject = new JsonObject();
-        jsonObject.putString(XmlTransformHandler.XML, "<root><test>ok</test><okok/></root>");
-        jsonObject.putString(XmlTransformHandler.XSL, Files.toString(new File(getClass().getResource("xsl_ko.xsl").getFile()), Charsets.UTF_8));
-        vertx.eventBus().send(XmlWorker.TRANSFORM_ADDRESS, jsonObject, replyHandler);
+        jsonObject.put(XmlTransformHandler.XML, "<root><test>ok</test><okok/></root>");
+        jsonObject.put(XmlTransformHandler.XSL, Files.toString(new File(getClass().getResource("xsl_ko.xsl").getFile()), Charsets.UTF_8));
+
+        eventBus.send(XmlWorker.TRANSFORM_ADDRESS, jsonObject, handler);
+
     }
 
     @Test
-    public void testXmlTransformWithXslOk() throws Exception {
-        final Handler<Message<JsonObject>> replyHandler = new Handler<Message<JsonObject>>() {
-            public void handle(Message<JsonObject> message) {
-                assertEquals("ok", message.body().getString("status"));
-                assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><toto/>",message.body().getString("output"));
-                testComplete();
-            }
-        };
+    public void testXmlTransformWithXslOk(TestContext context) throws Exception {
+
+        Async async = context.async();
+
+        final Handler<AsyncResult<Message<JsonObject>>> handler = context.asyncAssertSuccess( message -> {
+            context.assertEquals("ok", message.body().getString("status"));
+            context.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><toto/>",message.body().getString("output"));
+            async.complete();
+        });
+
         final JsonObject jsonObject = new JsonObject();
-        jsonObject.putString(XmlTransformHandler.URL_XML, getClass().getResource(
+        jsonObject.put(XmlTransformHandler.URL_XML, getClass().getResource(
                 "books_standalone_ok.xml").toURI().toASCIIString());
-        jsonObject.putString(XmlTransformHandler.URL_XSL, getClass().getResource("xsl_ok.xsl").toURI().toASCIIString());
-        vertx.eventBus().send(XmlWorker.TRANSFORM_ADDRESS, jsonObject, replyHandler);
+        jsonObject.put(XmlTransformHandler.URL_XSL, getClass().getResource("xsl_ok.xsl").toURI().toASCIIString());
+        eventBus.send(XmlWorker.TRANSFORM_ADDRESS, jsonObject, handler);
     }
 
     @Test
-    public void testXmlTransformWithXslParams() throws Exception {
-        final Handler<Message<JsonObject>> replyHandler = new Handler<Message<JsonObject>>() {
-            public void handle(Message<JsonObject> message) {
-                assertEquals("ok", message.body().getString("status"));
-                assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><toto/>c:/test",message.body().getString("output"));
-                testComplete();
-            }
-        };
+    public void testXmlTransformWithXslParams(TestContext context) throws Exception {
+
+        Async async = context.async();
+
+        final Handler<AsyncResult<Message<JsonObject>>> handler = context.asyncAssertSuccess( message -> {
+                context.assertEquals("ok", message.body().getString("status"));
+                context.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><toto/>c:/test",message.body().getString("output"));
+                async.complete();
+        });
+
         final JsonObject jsonObject = new JsonObject();
-        jsonObject.putString(XmlTransformHandler.URL_XML, getClass().getResource("books_standalone_ok.xml").toURI().toASCIIString());
-        jsonObject.putString(XmlTransformHandler.URL_XSL, getClass().getResource("xsl_ok.xsl").toURI().toASCIIString());
+        jsonObject.put(XmlTransformHandler.URL_XML, getClass().getResource("books_standalone_ok.xml").toURI().toASCIIString());
+        jsonObject.put(XmlTransformHandler.URL_XSL, getClass().getResource("xsl_ok.xsl").toURI().toASCIIString());
         JsonArray params = new JsonArray();
-        params.add(new JsonObject().putString("filename","c:/test"));
-        jsonObject.putArray(XmlTransformHandler.PARAMS, params);
-        vertx.eventBus().send(XmlWorker.TRANSFORM_ADDRESS, jsonObject, replyHandler);
+        params.add(new JsonObject().put("filename","c:/test"));
+        jsonObject.put(XmlTransformHandler.PARAMS, params);
+
+        eventBus.send(XmlWorker.TRANSFORM_ADDRESS, jsonObject, handler);
     }
 }
 

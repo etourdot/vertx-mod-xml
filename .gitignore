@@ -1,0 +1,40 @@
+# Eclipse
+.classpath
+.project
+.settings/
+ 
+# Intellij
+.idea/
+*.iml
+*.iws
+ 
+# Mac
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+ 
+# Maven
+log/
+target/
+
+# Vert.x
+.vertx
+
+# Misc
+*.swp
+*.bak
+.svn
+.vagrant
+.data
+.orig
+_tmp
+console.json
+console.log
+console-*.log
+console-*.json
+dms-*/log
+esi

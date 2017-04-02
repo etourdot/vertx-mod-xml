@@ -22,31 +22,21 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
-
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.QName;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.Serializer;
-import net.sf.saxon.s9api.XQueryCompiler;
-import net.sf.saxon.s9api.XQueryEvaluator;
-import net.sf.saxon.s9api.XQueryExecutable;
-import net.sf.saxon.s9api.XdmAtomicValue;
-
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import net.sf.saxon.s9api.*;
 import org.xml.sax.InputSource;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamSource;
 
 /**
  * XML Module<p> Please see the busmods manual for a full description<p>
@@ -71,7 +61,7 @@ public class XmlQueryHandler extends XmlDefaultHandler {
         final String query = messageBody.getString(QUERY);
         final String xml = messageBody.getString(XML);
         final String url_xml = messageBody.getString(URL_XML);
-        final JsonArray params = messageBody.getArray(PARAMS);
+        final JsonArray params = messageBody.getJsonArray(PARAMS);
 
         if (Strings.isNullOrEmpty(xml) && Strings.isNullOrEmpty(url_xml)) {
             sendError(message, "xml ou url_xml must be specified");
@@ -110,7 +100,7 @@ public class XmlQueryHandler extends XmlDefaultHandler {
             if (params != null) {
                 for (Object param : params) {
                     final JsonObject object = (JsonObject) param;
-                    for (String fieldName : object.getFieldNames()) {
+                    for (String fieldName : object.fieldNames()) {
                         xQueryEvaluator.setExternalVariable(new QName(fieldName),
                                 new XdmAtomicValue(object.getString(fieldName)));
                     }
@@ -118,7 +108,7 @@ public class XmlQueryHandler extends XmlDefaultHandler {
             }
             xQueryEvaluator.run();
             JsonObject outputObject = new JsonObject();
-            outputObject.putString("output", writer.toString());
+            outputObject.put("output", writer.toString());
             sendOK(message, outputObject);
         } catch (SaxonApiException | UnsupportedEncodingException | ExecutionException e) {
             sendError(message, e.getMessage());

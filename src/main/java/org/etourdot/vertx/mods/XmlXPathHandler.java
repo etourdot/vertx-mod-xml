@@ -22,30 +22,20 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
-
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.Serializer;
-import net.sf.saxon.s9api.XPathCompiler;
-import net.sf.saxon.s9api.XPathExecutable;
-import net.sf.saxon.s9api.XPathSelector;
-import net.sf.saxon.s9api.XdmNode;
-import net.sf.saxon.s9api.XdmValue;
-
-import org.vertx.java.core.eventbus.Message;
-import org.vertx.java.core.json.JsonObject;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonObject;
+import net.sf.saxon.s9api.*;
 import org.xml.sax.InputSource;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamSource;
 
 /**
  * XML Module<p> Please see the busmods manual for a full description<p>
@@ -109,7 +99,7 @@ public class XmlXPathHandler extends XmlDefaultHandler {
             final Serializer out = processor.newSerializer(writer);
             out.serializeXdmValue(xdmValue);
             JsonObject outputObject = new JsonObject();
-            outputObject.putString("output", writer.toString());
+            outputObject.put("output", writer.toString());
             sendOK(message, outputObject);
         } catch (SaxonApiException | UnsupportedEncodingException | ExecutionException e) {
             sendError(message, e.getMessage());
